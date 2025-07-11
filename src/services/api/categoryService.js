@@ -2,17 +2,16 @@ import categoriesData from "@/services/mockData/categories.json";
 import taskService from "./taskService";
 
 class CategoryService {
-  constructor() {
+constructor() {
     this.categories = [...categoriesData];
-    this.delay = 250;
+    this.delayMs = 250;
   }
 
-  async delay(ms) {
+delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-
-  async getAll() {
-    await this.delay(this.delay);
+async getAll() {
+    await this.delay(this.delayMs);
     const tasks = await taskService.getAll();
     
     return this.categories.map(category => ({
@@ -21,8 +20,8 @@ class CategoryService {
     }));
   }
 
-  async getById(id) {
-    await this.delay(this.delay);
+async getById(id) {
+    await this.delay(this.delayMs);
     const category = this.categories.find(c => c.Id === parseInt(id));
     if (!category) return null;
     
@@ -32,8 +31,8 @@ class CategoryService {
     return { ...category, taskCount };
   }
 
-  async create(categoryData) {
-    await this.delay(this.delay);
+async create(categoryData) {
+    await this.delay(this.delayMs);
     const newCategory = {
       ...categoryData,
       Id: Math.max(...this.categories.map(c => c.Id), 0) + 1,
@@ -43,8 +42,8 @@ class CategoryService {
     return { ...newCategory };
   }
 
-  async update(id, updates) {
-    await this.delay(this.delay);
+async update(id, updates) {
+    await this.delay(this.delayMs);
     const index = this.categories.findIndex(c => c.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -53,7 +52,7 @@ class CategoryService {
   }
 
   async delete(id) {
-    await this.delay(this.delay);
+await this.delay(this.delayMs);
     const index = this.categories.findIndex(c => c.Id === parseInt(id));
     if (index === -1) return false;
     
