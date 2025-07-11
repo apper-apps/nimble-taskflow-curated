@@ -1,29 +1,30 @@
 import tasksData from "@/services/mockData/tasks.json";
 import { format } from "date-fns";
+import React from "react";
 
 class TaskService {
   constructor() {
     this.tasks = [...tasksData];
-    this.delay = 300;
   }
 
+  // Helper function to simulate API delay
   async delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  async getAll() {
-    await this.delay(this.delay);
+async getAll() {
+    await this.delay(300);
     return [...this.tasks];
   }
 
   async getById(id) {
-    await this.delay(this.delay);
+    await this.delay(300);
     const task = this.tasks.find(t => t.Id === parseInt(id));
     return task ? { ...task } : null;
   }
 
   async create(taskData) {
-    await this.delay(this.delay);
+    await this.delay(300);
     const newTask = {
       ...taskData,
       Id: Math.max(...this.tasks.map(t => t.Id), 0) + 1,
@@ -35,9 +36,8 @@ class TaskService {
     this.tasks.push(newTask);
     return { ...newTask };
   }
-
-  async update(id, updates) {
-    await this.delay(this.delay);
+async update(id, updates) {
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -46,16 +46,15 @@ class TaskService {
   }
 
   async delete(id) {
-    await this.delay(this.delay);
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return false;
     
     this.tasks.splice(index, 1);
     return true;
   }
-
-  async markComplete(id) {
-    await this.delay(this.delay);
+async markComplete(id) {
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -68,7 +67,7 @@ class TaskService {
   }
 
   async markIncomplete(id) {
-    await this.delay(this.delay);
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -79,9 +78,8 @@ class TaskService {
     };
     return { ...this.tasks[index] };
   }
-
-  async archive(id) {
-    await this.delay(this.delay);
+async archive(id) {
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -93,7 +91,7 @@ class TaskService {
   }
 
   async restore(id) {
-    await this.delay(this.delay);
+    await this.delay(300);
     const index = this.tasks.findIndex(t => t.Id === parseInt(id));
     if (index === -1) return null;
     
@@ -103,9 +101,8 @@ class TaskService {
     };
     return { ...this.tasks[index] };
   }
-
-  async getStats() {
-    await this.delay(this.delay);
+async getStats() {
+    await this.delay(300);
     const today = format(new Date(), "yyyy-MM-dd");
     const startOfWeek = new Date();
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
