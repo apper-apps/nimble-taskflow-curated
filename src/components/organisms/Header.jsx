@@ -14,10 +14,10 @@ const Header = ({ onSearch, onAddTask, stats }) => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-12 flex items-center justify-center">
-              <ApperIcon name="CheckSquare" className="w-5 h-5 text-white" />
+<ApperIcon name="CheckSquare" className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">TaskFlow</h1>
+              <h1 className="text-xl font-bold text-gray-900">TaskFlow Pro</h1>
               <p className="text-sm text-gray-500">Streamlined task management</p>
             </div>
           </div>
