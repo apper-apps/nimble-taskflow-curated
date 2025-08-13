@@ -20,12 +20,12 @@ const TaskForm = ({ task, categories, onSubmit, onCancel }) => {
 
   useEffect(() => {
     if (task) {
-      setFormData({
-        title: task.title || "",
-        description: task.description || "",
-        categoryId: task.categoryId || "",
-        priority: task.priority || "medium",
-        dueDate: task.dueDate ? format(new Date(task.dueDate), "yyyy-MM-dd") : ""
+setFormData({
+        title: task.title_c || task.title || "",
+        description: task.description_c || task.description || "",
+        categoryId: (task.category_id_c?.Id || task.category_id_c || task.categoryId || "").toString(),
+        priority: task.priority_c || task.priority || "medium",
+        dueDate: (task.due_date_c || task.dueDate) ? format(new Date(task.due_date_c || task.dueDate), "yyyy-MM-dd") : ""
       });
     }
   }, [task]);
@@ -60,9 +60,12 @@ const TaskForm = ({ task, categories, onSubmit, onCancel }) => {
     setIsSubmitting(true);
     
     try {
-      const submitData = {
-        ...formData,
-        dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null
+const submitData = {
+        title_c: formData.title,
+        description_c: formData.description,
+        category_id_c: formData.categoryId,
+        priority_c: formData.priority,
+        due_date_c: formData.dueDate || null
       };
       
       await onSubmit(submitData);

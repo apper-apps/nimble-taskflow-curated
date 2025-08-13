@@ -11,11 +11,14 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
   const [isCompleting, setIsCompleting] = useState(false);
   const [showActions, setShowActions] = useState(false);
 
-  const category = categories.find(c => c.Id.toString() === task.categoryId);
-  const isOverdue = task.dueDate && isPast(new Date(task.dueDate)) && !isToday(new Date(task.dueDate)) && !task.completed;
+const categoryId = task.category_id_c?.Id || task.category_id_c || task.categoryId;
+  const category = categories.find(c => c.Id.toString() === categoryId?.toString());
+const dueDate = task.due_date_c || task.dueDate;
+  const completed = task.completed_c || task.completed;
+  const isOverdue = dueDate && isPast(new Date(dueDate)) && !isToday(new Date(dueDate)) && !completed;
 
   const handleToggleComplete = async () => {
-    if (task.completed) {
+if (completed) {
       await onToggleComplete(task.Id);
       return;
     }
@@ -33,7 +36,7 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
     low: { color: "success", icon: "Minus", label: "Low" }
   };
 
-  const priority = priorityConfig[task.priority] || priorityConfig.medium;
+const priority = priorityConfig[task.priority_c || task.priority] || priorityConfig.medium;
 
   return (
     <AnimatePresence mode="wait">
@@ -61,7 +64,7 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
         <div className="flex items-start gap-3">
           <div className="mt-1">
             <Checkbox
-              checked={task.completed}
+checked={completed}
               onChange={handleToggleComplete}
               className={cn(
                 "transition-all duration-200",
@@ -74,9 +77,9 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
             <div className="flex items-start justify-between gap-2">
               <h3 className={cn(
                 "font-medium text-gray-900 text-sm leading-tight",
-                task.completed && "line-through text-gray-500"
+completed && "line-through text-gray-500"
               )}>
-                {task.title}
+{task.title_c || task.title}
               </h3>
               
               <AnimatePresence>
@@ -103,7 +106,7 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
                     >
                       <ApperIcon name="Trash2" className="w-3 h-3" />
                     </Button>
-                    {task.completed && (
+{completed && (
                       <Button
                         variant="ghost"
                         size="sm"
@@ -118,12 +121,12 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
               </AnimatePresence>
             </div>
 
-            {task.description && (
+{(task.description_c || task.description) && (
               <p className={cn(
                 "text-sm text-gray-600 mt-1 line-clamp-2",
-                task.completed && "text-gray-400"
+                completed && "text-gray-400"
               )}>
-                {task.description}
+{task.description_c || task.description}
               </p>
             )}
 
@@ -133,7 +136,7 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
                 <div 
                   className={cn(
                     "w-2 h-2 rounded-full",
-                    isOverdue && !task.completed && "animate-pulse",
+isOverdue && !completed && "animate-pulse",
                     priority.color === "error" && "bg-error",
                     priority.color === "warning" && "bg-warning",
                     priority.color === "success" && "bg-success"
@@ -151,20 +154,20 @@ const TaskCard = ({ task, categories, onToggleComplete, onEdit, onDelete, onArch
               )}
 
               {/* Due Date */}
-              {task.dueDate && (
+{dueDate && (
                 <div className="flex items-center gap-1 ml-auto">
                   <ApperIcon 
                     name="Calendar" 
                     className={cn(
                       "w-3 h-3",
-                      isOverdue && !task.completed ? "text-error" : "text-gray-400"
+isOverdue && !completed ? "text-error" : "text-gray-400"
                     )} 
                   />
                   <span className={cn(
                     "text-xs",
-                    isOverdue && !task.completed ? "text-error font-medium" : "text-gray-500"
+isOverdue && !completed ? "text-error font-medium" : "text-gray-500"
                   )}>
-                    {isToday(new Date(task.dueDate)) ? "Today" : format(new Date(task.dueDate), "MMM d")}
+{isToday(new Date(dueDate)) ? "Today" : format(new Date(dueDate), "MMM d")}
                   </span>
                 </div>
               )}

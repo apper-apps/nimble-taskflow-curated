@@ -170,60 +170,76 @@ const TasksDashboard = () => {
     let filtered = [...tasks];
 
     // Apply search filter
-    if (searchQuery) {
+if (searchQuery) {
       filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (task.title_c || task.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (task.description_c || task.description || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Apply category filter
-    if (activeCategory !== "all") {
-      filtered = filtered.filter(task => task.categoryId === activeCategory.toString());
+if (activeCategory !== "all") {
+      filtered = filtered.filter(task => {
+        const categoryId = task.category_id_c?.Id || task.category_id_c || task.categoryId;
+        return parseInt(categoryId) === parseInt(activeCategory);
+      });
     }
 
     // Apply status filter
     if (filters.status !== "all") {
       switch (filters.status) {
         case "completed":
-          filtered = filtered.filter(task => task.completed);
+filtered = filtered.filter(task => task.completed_c || task.completed);
           break;
         case "pending":
-          filtered = filtered.filter(task => !task.completed);
+          filtered = filtered.filter(task => !(task.completed_c || task.completed));
           break;
-        case "overdue":
-          filtered = filtered.filter(task => 
-            !task.completed && task.dueDate && isPast(new Date(task.dueDate)) && !isToday(new Date(task.dueDate))
-          );
+case "overdue":
+          filtered = filtered.filter(task => {
+            const completed = task.completed_c || task.completed;
+            const dueDate = task.due_date_c || task.dueDate;
+            return !completed && dueDate && isPast(new Date(dueDate)) && !isToday(new Date(dueDate));
+          });
           break;
       }
     }
 
     // Apply priority filter
-    if (filters.priority !== "all") {
-      filtered = filtered.filter(task => task.priority === filters.priority);
+if (filters.priority !== "all") {
+      filtered = filtered.filter(task => (task.priority_c || task.priority) === filters.priority);
     }
 
     // Apply category filter from filter bar
-    if (filters.category !== "all") {
-      filtered = filtered.filter(task => task.categoryId === filters.category);
+if (filters.category !== "all") {
+      filtered = filtered.filter(task => {
+        const categoryId = task.category_id_c?.Id || task.category_id_c || task.categoryId;
+        return parseInt(categoryId) === parseInt(filters.category);
+      });
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case "dueDate":
-          if (!a.dueDate && !b.dueDate) return 0;
-          if (!a.dueDate) return 1;
-          if (!b.dueDate) return -1;
-          return new Date(a.dueDate) - new Date(b.dueDate);
+case "dueDate":
+          const aDueDate = a.due_date_c || a.dueDate;
+          const bDueDate = b.due_date_c || b.dueDate;
+          if (!aDueDate && !bDueDate) return 0;
+          if (!aDueDate) return 1;
+          if (!bDueDate) return -1;
+          return new Date(aDueDate) - new Date(bDueDate);
         case "priority":
-          const priorityOrder = { high: 3, medium: 2, low: 1 };
-          return priorityOrder[b.priority] - priorityOrder[a.priority];
-        case "created":
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        case "title":
-          return a.title.localeCompare(b.title);
+const priorityOrder = { high: 3, medium: 2, low: 1 };
+          const aPriority = a.priority_c || a.priority || 'medium';
+          const bPriority = b.priority_c || b.priority || 'medium';
+          return priorityOrder[bPriority] - priorityOrder[aPriority];
+case "created":
+          const aCreated = a.created_at_c || a.createdAt || a.CreatedOn;
+          const bCreated = b.created_at_c || b.createdAt || b.CreatedOn;
+          return new Date(bCreated) - new Date(aCreated);
+case "title":
+          const aTitle = a.title_c || a.title || '';
+          const bTitle = b.title_c || b.title || '';
+          return aTitle.localeCompare(bTitle);
         default:
           return 0;
       }

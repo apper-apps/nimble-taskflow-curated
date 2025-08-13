@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Header from "@/components/organisms/Header";
-import Sidebar from "@/components/organisms/Sidebar";
-import MobileSidebar from "@/components/organisms/MobileSidebar";
-import categoryService from "@/services/api/categoryService";
-import taskService from "@/services/api/taskService";
-import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
+import Header from "@/components/organisms/Header";
+import MobileSidebar from "@/components/organisms/MobileSidebar";
+import Sidebar from "@/components/organisms/Sidebar";
+import Button from "@/components/atoms/Button";
+import taskService from "@/services/api/taskService";
+import categoryService from "@/services/api/categoryService";
 
 const Layout = () => {
   const [categories, setCategories] = useState([]);
@@ -15,7 +15,7 @@ const Layout = () => {
   const [stats, setStats] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
+useEffect(() => {
     loadCategories();
     loadStats();
   }, []);
@@ -42,8 +42,8 @@ const Layout = () => {
     setActiveCategory(categoryId);
   };
 
-  const handleAddCategory = () => {
-    // This would open a modal to add a category
+const handleAddCategory = () => {
+// TODO: Implement add category modal
     console.log("Add category modal");
   };
 

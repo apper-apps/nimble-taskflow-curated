@@ -1,9 +1,15 @@
 import { motion } from "framer-motion";
+import { useContext } from "react";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
+import { AuthContext } from "../../App";
 
 const Header = ({ onSearch, onAddTask, stats }) => {
+  const { logout } = useContext(AuthContext);
+  const user = useSelector((state) => state.user.user);
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -14,7 +20,7 @@ const Header = ({ onSearch, onAddTask, stats }) => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-12 flex items-center justify-center">
-<ApperIcon name="CheckSquare" className="w-5 h-5 text-white" />
+              <ApperIcon name="CheckSquare" className="w-5 h-5 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">TaskFlow Pro</h1>
@@ -58,6 +64,25 @@ const Header = ({ onSearch, onAddTask, stats }) => {
             <ApperIcon name="Plus" className="w-4 h-4" />
             <span className="hidden sm:inline">Add Task</span>
           </Button>
+
+          {user && (
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex flex-col text-right">
+                <span className="text-sm font-medium text-gray-900">
+                  {user.firstName} {user.lastName}
+                </span>
+                <span className="text-xs text-gray-500">{user.emailAddress}</span>
+              </div>
+              <Button
+                variant="outline"
+                onClick={logout}
+                className="flex items-center gap-2"
+              >
+                <ApperIcon name="LogOut" className="w-4 h-4" />
+                <span className="hidden sm:inline">Logout</span>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       

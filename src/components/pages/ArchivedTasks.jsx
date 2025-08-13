@@ -26,8 +26,8 @@ const ArchivedTasks = () => {
     try {
       setLoading(true);
       setError("");
-      const data = await taskService.getAll();
-      setTasks(data.filter(task => task.archived));
+const data = await taskService.getAll();
+      setTasks(data.filter(task => task.archived_c || task.archived));
     } catch (err) {
       setError("Failed to load archived tasks");
       console.error("Error loading archived tasks:", err);
@@ -83,19 +83,23 @@ const ArchivedTasks = () => {
     let filtered = [...tasks];
 
     // Apply search filter
-    if (searchQuery) {
+if (searchQuery) {
       filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        (task.title_c || task.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (task.description_c || task.description || '').toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
     // Sort by archived date (most recent first)
-    filtered.sort((a, b) => {
-      if (a.completedAt && b.completedAt) {
-        return new Date(b.completedAt) - new Date(a.completedAt);
+filtered.sort((a, b) => {
+      const aCompleted = a.completed_at_c || a.completedAt;
+      const bCompleted = b.completed_at_c || b.completedAt;
+      if (aCompleted && bCompleted) {
+        return new Date(bCompleted) - new Date(aCompleted);
       }
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      const aCreated = a.created_at_c || a.createdAt || a.CreatedOn;
+      const bCreated = b.created_at_c || b.createdAt || b.CreatedOn;
+      return new Date(bCreated) - new Date(aCreated);
     });
 
     return filtered;
@@ -105,7 +109,8 @@ const ArchivedTasks = () => {
 
   // Custom TaskCard component for archived tasks
   const ArchivedTaskCard = ({ task, categories }) => {
-    const category = categories.find(c => c.Id.toString() === task.categoryId);
+const categoryId = task.category_id_c?.Id || task.category_id_c || task.categoryId;
+    const category = categories.find(c => c.Id.toString() === categoryId?.toString());
     
     return (
       <motion.div
@@ -116,9 +121,9 @@ const ArchivedTasks = () => {
       >
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="font-medium text-gray-700 mb-1">{task.title}</h3>
-            {task.description && (
-              <p className="text-sm text-gray-500 mb-2">{task.description}</p>
+<h3 className="font-medium text-gray-700 mb-1">{task.title_c || task.title}</h3>
+{(task.description_c || task.description) && (
+              <p className="text-sm text-gray-500 mb-2">{task.description_c || task.description}</p>
             )}
             <div className="flex items-center gap-2 text-xs text-gray-400">
               {category && (
@@ -128,7 +133,7 @@ const ArchivedTasks = () => {
                 </span>
               )}
               <span>•</span>
-              <span>Completed {task.completedAt ? new Date(task.completedAt).toLocaleDateString() : "Unknown"}</span>
+<span>Completed {(task.completed_at_c || task.completedAt) ? new Date(task.completed_at_c || task.completedAt).toLocaleDateString() : "Unknown"}</span>
             </div>
           </div>
           
